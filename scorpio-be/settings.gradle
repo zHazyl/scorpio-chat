@@ -1,0 +1,4 @@
+rootProject.name = 'scorpio-be'
+include 'config-server'
+include 'eureka-server'
+include 'messages-websocket-service'
