@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    # Change DESKTOP-F879KH9 to your SQL server name
+    url: jdbc:sqlserver://DESKTOP-CRNH1I9\SQLEXPRESS;databaseName=friend_chat_service_database;encrypt=true;trustServerCertificate=true;
+    username: sa
+    password: 123456
