@@ -1,10 +1,10 @@
-package com.tnh.configserver;
+package com.tnh.chatmessagesservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ConfigServerApplicationTests {
+class ChatMessagesServiceApplicationTests {
 
     @Test
     void contextLoads() {
