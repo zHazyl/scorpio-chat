@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'com.tnh'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -32,14 +32,14 @@ dependencyManagement {
 }
 
 docker {
-    name "${project.name}:${project.version}"
+    name "zhazy/${project.name}:${project.version}"
     files "$buildDir/libs/${project.name}-${project.version}.jar"
     buildArgs([JAR_FILE: "${project.name}-${project.version}.jar"])
 }
 
 dockerRun {
     name "${project.name}"
-    image "${project.name}:${project.version}"
+    image "zhazy/${project.name}:${project.version}"
     ports '8080:8080'
     clean true
     daemonize false

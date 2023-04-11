@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  config-server:
+    container_name: config-server
+    image: zhazy/config-server:0.0.1-SNAPSHOT
+    ports:
+      - 8888:8888
+  eureka-server:
+    container_name: eureka-server
+    image: zhazy/eureka-server:1.0.1-SNAPSHOT
+    ports:
+      - 8761:8761
+    restart: always
+  cloud-gateway:
+    container_name: cloud-gateway
+    image: zhazy/cloud-gateway:0.0.1-SNAPSHOT
+    ports:
+      - 8080:8080
+    restart: always
