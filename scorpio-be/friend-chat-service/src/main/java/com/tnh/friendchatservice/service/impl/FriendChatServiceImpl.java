@@ -24,4 +24,10 @@ public class FriendChatServiceImpl implements FriendChatService {
     public List<FriendChat> getAllFriendChats() {
         return friendChatRepository.findAll();
     }
+    @Override
+    public String deleteFriendChat(long id)
+    {
+        friendChatRepository.deleteById(id);
+        return "Deleted successfully !";
+    }
 }

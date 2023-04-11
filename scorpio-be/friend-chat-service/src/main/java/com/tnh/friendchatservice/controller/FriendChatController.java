@@ -2,6 +2,7 @@ package com.tnh.friendchatservice.controller;
 
 import com.tnh.friendchatservice.domain.FriendChat;
 import com.tnh.friendchatservice.service.FriendChatService;
+import lombok.NoArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,12 +10,13 @@ import java.util.List;
 
 // Build API
 @RestController
-@RequestMapping("/api/v2/FriendChat")
-// example : http://localhost:8081/api/v2/FriendChat is listened by this controller
+@NoArgsConstructor
+@RequestMapping("/api/v1/FriendChat")
+// example : http://localhost:8081/api/v1/members is listened by this controller
 public class FriendChatController {
 
     // Dependency injection - should read this
-    private final FriendChatService friendChatService;
+    private FriendChatService friendChatService;
 
     public FriendChatController(FriendChatService friendChatService) {
         this.friendChatService = friendChatService;
@@ -22,12 +24,22 @@ public class FriendChatController {
 
     @GetMapping
     public List<FriendChat> getAllFriendChats() {
-        return friendChatService.getAllFriendChats();
+        if(this.friendChatService != null)
+        {
+            return friendChatService.getAllFriendChats();
+        }
+        else
+            return null;
     }
 
     @PostMapping
     public FriendChat addFriendChat(@RequestBody FriendChat friendChat) {
         return friendChatService.addFriendChat(friendChat);
+    }
+    @DeleteMapping("/{id}")
+    public String deleteFriendChat(@PathVariable long id)
+    {
+        return friendChatService.deleteFriendChat(id);
     }
 
 

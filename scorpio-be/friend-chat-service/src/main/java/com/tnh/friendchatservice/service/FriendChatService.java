@@ -8,5 +8,6 @@ import java.util.List;
 public interface FriendChatService {
     FriendChat addFriendChat(FriendChat friendChat);
     List<FriendChat> getAllFriendChats();
+    String deleteFriendChat(long id);
 
 }
