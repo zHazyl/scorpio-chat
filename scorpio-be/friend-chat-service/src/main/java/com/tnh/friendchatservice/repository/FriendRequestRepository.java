@@ -28,8 +28,8 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequest, Lo
 
     @Modifying
     @Query(value = "INSERT INTO friend_request (sender_id, recipient_id, sent_time, is_accepted) " +
-            "VALUES (:sender_id, :recipient_id, NOW(), false)", nativeQuery = true)
-    void addFriendRequest(String sender_id, String recipient_id);
+            "VALUES (:sender_id, :recipient_id, DATE(), false)", nativeQuery = true)
+    FriendRequest addFriendRequest(String sender_id, String recipient_id);
 
 
 

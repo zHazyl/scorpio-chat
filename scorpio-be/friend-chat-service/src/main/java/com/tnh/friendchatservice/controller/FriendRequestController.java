@@ -34,12 +34,15 @@ public class FriendRequestController {
         List<FriendRequest> friendRequestList = friendRequestService.getAllUnacceptedRequestToSenderId(sender_id);
         return ResponseEntity.ok(friendRequestList);
     }
-
-    @PostMapping(value = "/add/{")
-    public ResponseEntity<?> createFriendRequest(@RequestParam() String sender_id){
-        //boolean result = friendRequestServic
-        return null;
+    @PostMapping(value = "/invite")
+    public ResponseEntity<?> createFriendRequest(@RequestParam String sender_id, String friend_code_request)
+    {
+        FriendRequest newFriendRequest = friendRequestService.createFriendRequest(sender_id,friend_code_request);
+        return ResponseEntity.ok(newFriendRequest);
     }
+
+
+
 
 
 }

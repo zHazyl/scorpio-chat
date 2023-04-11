@@ -1,8 +1,11 @@
 package com.tnh.friendchatservice.service.impl;
 
+import com.tnh.friendchatservice.domain.ChatProfile;
 import com.tnh.friendchatservice.domain.FriendRequest;
+import com.tnh.friendchatservice.repository.ChatProfileRepository;
 import com.tnh.friendchatservice.repository.FriendRequestRepository;
 import com.tnh.friendchatservice.service.FriendRequestService;
+import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +15,11 @@ import java.util.List;
 public class FriendRequestImpl implements FriendRequestService{
 
     private FriendRequestRepository friendRequestRepository;
+    private ChatProfileRepository chatProfileRepository;
     @Autowired
-    public  FriendRequestImpl (FriendRequestRepository freq){
+    public  FriendRequestImpl (FriendRequestRepository freq, ChatProfileRepository chat){
         this.friendRequestRepository = freq;
+        this.chatProfileRepository = chat;
     }
 
     @Override
@@ -41,19 +46,35 @@ public class FriendRequestImpl implements FriendRequestService{
     public List<FriendRequest> getAllRequest() {
         return friendRequestRepository.findAll();
     }
+
     @Override
-    public Boolean createFriendRequest(String sender_id, String recipient_id) {
-        // check if friend request already exists
-        int checkExist = friendRequestRepository.checkFriendRequestExist(sender_id, recipient_id);
-        if (checkExist > 0)
+    public FriendRequest createFriendRequest(String sender_id, String friend_request_code) {
+
+        ChatProfile checkSenderProfile =
+                chatProfileRepository.findById(sender_id).orElseThrow(() -> new RuntimeException("Sender not exist"));
+
+        ChatProfile checkRecipientProfile =
+                chatProfileRepository.findById(friend_request_code).orElseThrow(() -> new RuntimeException("Friend Request Code Not Found"));
+
+        //Nếu gửi lời mời kết bạn cho chính mình thì sẽ bị lỗi
+        if (checkSenderProfile.getFriends_request_code()==friend_request_code)
         {
-            throw new IllegalStateException("Friend Request already been created");
+            throw new IllegalArgumentException("Can not send request to yourself");
         }
-        else {
-            friendRequestRepository.addFriendRequest(sender_id,recipient_id);
-            return true;
+        //Nếu request đã tồn tại
+        if (friendRequestRepository.checkFriendRequestExist(sender_id, checkRecipientProfile.getUser_id())>0){
+
+            throw new EntityExistsException("Friend Request already exist");
         }
+        FriendRequest newFriendRequest = friendRequestRepository.addFriendRequest(sender_id, checkRecipientProfile.getUser_id());
+        return newFriendRequest;
     }
+
+    @Override
+    public void deleteFriendRequest(String sender_id, long friendRequestId) {
+
+    }
+
 
     @Override
     public FriendRequest deleteFriendRequest() {

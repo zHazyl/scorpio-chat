@@ -10,7 +10,9 @@ public interface FriendRequestService {
      List<FriendRequest> getAllUnacceptedRequestToSenderId(String sender_id);
 
      List<FriendRequest> getAllRequest();
-     Boolean createFriendRequest(String sender_id, String recipient_id);
+     FriendRequest createFriendRequest(String sender_id, String friend_request_code);
+
+     void deleteFriendRequest(String sender_id, long friendRequestId);
 
      FriendRequest deleteFriendRequest();
 
