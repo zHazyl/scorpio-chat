@@ -1,3 +1,8 @@
+server:
+  port: 8091
 spring:
-  application:
-    name: auth
+  datasource:
+    # Change DESKTOP-F879KH9 to your SQL server name
+    url: jdbc:sqlserver://LAPTOP-UUTBA72E;encrypt=true;trustServerCertificate=true;databaseName=auth_service_database
+    username: sa
+    password: 1
