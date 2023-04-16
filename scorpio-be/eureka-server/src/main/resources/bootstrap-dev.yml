@@ -1,0 +1,4 @@
+spring:
+  cloud:
+    config:
+      uri: http://20.207.203.105:8888

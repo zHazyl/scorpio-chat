@@ -1,13 +1,13 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.3'
+    id 'org.springframework.boot' version '3.0.4'
     id 'io.spring.dependency-management' version '1.1.0'
     id 'com.palantir.docker' version '0.34.0'
     id 'com.palantir.docker-run' version '0.34.0'
 }
 
 group = 'com.tnh'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.2-SNAPSHOT'
 sourceCompatibility = '17'
 
 repositories {
@@ -20,8 +20,10 @@ ext {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -32,14 +34,14 @@ dependencyManagement {
 }
 
 docker {
-    name "${project.name}:${project.version}"
+    name "zhazy/${project.name}:${project.version}"
     files "$buildDir/libs/${project.name}-${project.version}.jar"
     buildArgs([JAR_FILE: "${project.name}-${project.version}.jar"])
 }
 
 dockerRun {
     name "${project.name}"
-    image "${project.name}:${project.version}"
+    image "zhazy/${project.name}:${project.version}"
     ports '8080:8080'
     clean true
     daemonize false
