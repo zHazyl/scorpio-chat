@@ -32,14 +32,14 @@ public class FriendChatController {
             return null;
     }
 
-//    @PostMapping
-//    public FriendChat addFriendChat() {
-//
-//    }
-//    @DeleteMapping("/{id}")
-//    public String deleteFriendChat()
-//    {
-//    }
+    @PostMapping
+    public FriendChat addFriendChat() {
+
+    }
+    @DeleteMapping("/{id}")
+    public String deleteFriendChat()
+    {
+    }
 
 
 }
