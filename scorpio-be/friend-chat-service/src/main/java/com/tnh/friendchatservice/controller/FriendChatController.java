@@ -32,15 +32,14 @@ public class FriendChatController {
             return null;
     }
 
-    @PostMapping
-    public FriendChat addFriendChat(@RequestBody FriendChat friendChat) {
-        return friendChatService.addFriendChat(friendChat);
-    }
-    @DeleteMapping("/{id}")
-    public String deleteFriendChat(@PathVariable long id)
-    {
-        return friendChatService.deleteFriendChat(id);
-    }
+//    @PostMapping
+//    public FriendChat addFriendChat() {
+//
+//    }
+//    @DeleteMapping("/{id}")
+//    public String deleteFriendChat()
+//    {
+//    }
 
 
 }
