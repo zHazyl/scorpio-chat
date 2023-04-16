@@ -24,6 +24,7 @@ repositories {
 ext {
     set('springCloudVersion', "2022.0.1")
     mapstructVersion = "1.5.3.Final"
+    keycloakVersion = "16.1.0"
 }
 
 dependencies {
@@ -37,7 +38,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.keycloak:keycloak-spring-boot-starter'
+    implementation 'org.keycloak:keycloak-admin-client:16.1.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
     annotationProcessor 'org.projectlombok:lombok'
@@ -50,6 +53,7 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.keycloak.bom:keycloak-adapter-bom:${keycloakVersion}"
     }
 }
 
