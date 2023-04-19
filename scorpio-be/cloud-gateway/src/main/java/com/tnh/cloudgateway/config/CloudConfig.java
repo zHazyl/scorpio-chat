@@ -15,6 +15,10 @@ public class CloudConfig {
                                 .filters(f -> f.rewritePath("/auth-service/(?<remaining>.*)", "/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
                                 .uri("lb://AUTH")
                 )
+                .route(predicateSpec -> predicateSpec.path("/group-service/**")
+                        .filters(f -> f.rewritePath("/group-service/(?<remaining>.*)", "/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
+                        .uri("lb://GROUPCHAT")
+                )
                 .build();
     }
 }
