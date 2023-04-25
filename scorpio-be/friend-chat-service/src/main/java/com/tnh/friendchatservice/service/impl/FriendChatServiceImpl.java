@@ -41,55 +41,48 @@ public class FriendChatServiceImpl implements FriendChatService {
 
         friendChatForSecondUser.setSender(secondUserChatProfile);
         friendChatForSecondUser.setRecipient(firstUserChatProfile);
-        //friendChatRepository.save(friendChatForFirstUser);
-        //friendChatRepository.save(friendChatForSecondUser);
+        friendChatRepository.save(friendChatForFirstUser);
+        friendChatRepository.save(friendChatForSecondUser);
 
-        friendChatForFirstUser.setChatWith(friendChatForSecondUser);
-        friendChatForSecondUser.setChatWith(friendChatForFirstUser);
+        friendChatForFirstUser.setChatwith(friendChatForSecondUser);
+        friendChatForSecondUser.setChatwith(friendChatForFirstUser);
 
 
         friendChatRepository.save(friendChatForFirstUser);
-        //friendChatRedisRepository.save(friendChatForFirstUser);
         friendChatRepository.save(friendChatForSecondUser);
-        //friendChatRedisRepository.save(friendChatForSecondUser);
 
-        //friendRequestRepository.deleteFriendRequestByChatProfiles(friendChat.getSender(), friendChat.getRecipient());
 
     }
 
-//    @Override
-//    public List<FriendChat> getAllFriendChats() {
-//        return friendChatRepository.findAll();
-//    }
     @Override
     public List<FriendChat> getAllFriendsChatsBySender(String currentUserId) {
 
-        List<FriendChat> friendChats;
+        List<FriendChat> friendChats = null;
 
-        friendChats = chatProfileRepository.findById(UUID.fromString(currentUserId))
-                .map(friendChatRepository::findBySender)
-                .orElseThrow(() -> new NotFoundException(
-                        "User with id " + currentUserId + " not found"));
-        //friendChats.forEach(friendChat -> {
-            //friendChatRedisRepository.save(friendChat);
-        //});
+//        friendChats = chatProfileRepository.findById(UUID.fromString(currentUserId))
+//                .map(friendChatRepository::findBySender)
+//                .orElseThrow(() -> new NotFoundException(
+//                        "User with id " + currentUserId + " not found"));
+//
+//        });
         return friendChats;
     }
 
     @Transactional
     @Override
     public void deleteFriendChat(long friendChatId, long friendChatWithId, String currentUserId) {
-        var friendChat = friendChatRepository.findByIdAndFriendChatWithIdAndSenderId(
+        var friendChat =
+                friendChatRepository.findByIdAndFriendChatWithIdAndSenderId(
                                 friendChatId, friendChatWithId,
-                                UUID.fromString(currentUserId)).orElseThrow(() -> new NotFoundException("Friend chat not found"));
+                                UUID.fromString(currentUserId))
+                        .orElseThrow(() -> new NotFoundException("Friend chat not found"));
+//        friendRequestRepository.deleteFriendRequestByChatProfiles(friendChat.getSender(),
+//                friendChat.getRecipient());
+//        friendChatRedisRepository.deleteFriendChat(
+//                friendChat.getSender().getUserId().toString(),
+//                Long.toString(friendChatId)
+//        );
 
-
-        //friendChatRedisRepository.deleteFriendChat(
-        //        friendChat.getSender().getUserId().toString(), Long.toString(friendChatId)
-        //);
-        //friendChatRedisRepository.deleteFriendChat(
-        //        friendChat.getRecipient().getUserId().toString(), Long.toString(friendChatWithId)
-        //);
         friendChatRepository.delete(friendChat);
     }
 }

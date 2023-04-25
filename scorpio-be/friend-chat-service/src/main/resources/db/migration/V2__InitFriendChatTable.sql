@@ -1,5 +1,5 @@
 CREATE TABLE friend_chat (
-                            id BIGINT PRIMARY KEY,
+                            id BIGINT IDENTITY(0,1) PRIMARY KEY,
                             chat_with_id BIGINT,
                             sender_id varchar(64) NOT NULL,
                             recipient_id varchar(64) NOT NULL,

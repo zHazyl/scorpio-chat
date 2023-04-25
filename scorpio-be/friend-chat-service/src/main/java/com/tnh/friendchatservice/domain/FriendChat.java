@@ -39,7 +39,7 @@ public class FriendChat {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "chat_with_id")
-    private FriendChat chatWith;
+    private FriendChat chatwith;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
@@ -50,10 +50,10 @@ public class FriendChat {
     private ChatProfile recipient;
 
 
-//    @JoinColumn(name = "s_nickname", nullable = true)
-//    private String s_nickname ;
-//
-//    @JoinColumn(name = "r_nickname", nullable = true)
-//    private String r_nickname ;
+    @JoinColumn(name = "s_nickname", nullable = true)
+    private String s_nickname ;
+
+    @JoinColumn(name = "r_nickname", nullable = true)
+    private String r_nickname ;
 
 }

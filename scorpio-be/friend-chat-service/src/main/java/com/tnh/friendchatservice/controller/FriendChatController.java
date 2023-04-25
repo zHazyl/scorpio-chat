@@ -1,5 +1,6 @@
 package com.tnh.friendchatservice.controller;
 
+import com.tnh.friendchatservice.domain.ChatProfile;
 import com.tnh.friendchatservice.domain.FriendChat;
 import com.tnh.friendchatservice.service.FriendChatService;
 import lombok.NoArgsConstructor;
@@ -26,19 +27,20 @@ public class FriendChatController {
     public List<FriendChat> getAllFriendChats() {
         if(this.friendChatService != null)
         {
-            return friendChatService.getAllFriendChats();
+            return null; //friendChatService.getAllFriendChats();
         }
         else
             return null;
     }
 
     @PostMapping
-    public FriendChat addFriendChat() {
-
+    public void addFriendChat(ChatProfile chatProfile1, ChatProfile chatProfile2) {
+        friendChatService.addFriendChat(chatProfile1, chatProfile2); ;
     }
-    @DeleteMapping("/{id}")
-    public String deleteFriendChat()
+    @DeleteMapping("/{friendChatId/friendChatWithId/currentUserId}")
+    public void deleteFriendChat(long friendChatId, long friendChatWithId, String currentUserId)
     {
+        friendChatService.deleteFriendChat(friendChatId,friendChatWithId,currentUserId);
     }
 
 
