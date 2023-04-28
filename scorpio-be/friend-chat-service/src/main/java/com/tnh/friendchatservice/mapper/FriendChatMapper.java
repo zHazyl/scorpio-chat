@@ -10,12 +10,12 @@ import org.mapstruct.Named;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = ChatProfileMapper.class)
+@Mapper(componentModel = "spring")
 public interface FriendChatMapper {
 
     @Named("mapFriendChatToFriendChatDTO")
     @Mapping(target = "chatWith", expression = "java(convertChatWithToId(friendChat.getChatWith()))")
-    @Mapping(target = "recipient", qualifiedByName = "mapChatProfileToChatProfileDTO")
+//  @Mapping(target = "recipient", expression = "java(convertRecipientToUserId(friendChat.getRecipient()))")
     FriendChatDTO mapToFriendChatDTO(FriendChat friendChat);
 
     @IterableMapping(qualifiedByName = {"mapFriendChatToFriendChatDTO"})
@@ -24,5 +24,8 @@ public interface FriendChatMapper {
     default Long convertChatWithToId(FriendChat chatWith) {
         return chatWith.getId();
     }
+//    default String convertRecipientToUserId(ChatProfile recipient) {
+//        return recipient.getUserId();
+//    }
 
 }

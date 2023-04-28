@@ -39,7 +39,7 @@ public class FriendChat {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
     @JoinColumn(name = "chat_with_id")
-    private FriendChat chatwith;
+    private FriendChat chatWith;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)

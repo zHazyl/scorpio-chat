@@ -1,11 +1,12 @@
 package com.tnh.friendchatservice.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import jakarta.persistence.*;
-import java.util.UUID;
 
 
 @Getter
@@ -17,7 +18,7 @@ public class ChatProfile {
 
     @Id
     @Column(nullable = false, name = "user_id", unique = true, columnDefinition = "BINARY(16)")
-    private UUID userId;
+    private String userId;
 
     @Column(name = "friends_request_code", nullable = false, length = 64, unique = true)
     private String friendsRequestCode;

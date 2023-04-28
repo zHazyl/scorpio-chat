@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 // Handle behavior in database
 @Repository
-public interface ChatProfileRepository extends JpaRepository<FriendChat, Long> {
+public interface ChatProfileRepository extends JpaRepository<FriendChat, String> {
 
 }

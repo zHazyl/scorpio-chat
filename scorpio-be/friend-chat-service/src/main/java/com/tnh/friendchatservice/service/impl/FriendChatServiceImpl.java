@@ -11,7 +11,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class FriendChatServiceImpl implements FriendChatService {
@@ -44,27 +43,25 @@ public class FriendChatServiceImpl implements FriendChatService {
         friendChatRepository.save(friendChatForFirstUser);
         friendChatRepository.save(friendChatForSecondUser);
 
-        friendChatForFirstUser.setChatwith(friendChatForSecondUser);
-        friendChatForSecondUser.setChatwith(friendChatForFirstUser);
+        friendChatForFirstUser.setChatWith(friendChatForSecondUser);
+        friendChatForSecondUser.setChatWith(friendChatForFirstUser);
 
 
         friendChatRepository.save(friendChatForFirstUser);
         friendChatRepository.save(friendChatForSecondUser);
-
 
     }
 
     @Override
     public List<FriendChat> getAllFriendsChatsBySender(String currentUserId) {
 
-        List<FriendChat> friendChats = null;
+        List<FriendChat> friendChats ;
+        var sender = chatProfileRepository.findById(currentUserId);
 
-//        friendChats = chatProfileRepository.findById(UUID.fromString(currentUserId))
-//                .map(friendChatRepository::findBySender)
-//                .orElseThrow(() -> new NotFoundException(
-//                        "User with id " + currentUserId + " not found"));
-//
-//        });
+        friendChats = friendChatRepository.findBySender(sender);
+        if (friendChats == null)
+            sender.orElseThrow(() -> new NotFoundException(
+                        "User with id " + currentUserId + " not found"));
         return friendChats;
     }
 
@@ -74,13 +71,10 @@ public class FriendChatServiceImpl implements FriendChatService {
         var friendChat =
                 friendChatRepository.findByIdAndFriendChatWithIdAndSenderId(
                                 friendChatId, friendChatWithId,
-                                UUID.fromString(currentUserId))
+                                currentUserId)
                         .orElseThrow(() -> new NotFoundException("Friend chat not found"));
-//        friendRequestRepository.deleteFriendRequestByChatProfiles(friendChat.getSender(),
+//        friendRequestRepository.changeStatusFriendRequestByChatProfiles(friendChat.getSender(),
 //                friendChat.getRecipient());
-//        friendChatRedisRepository.deleteFriendChat(
-//                friendChat.getSender().getUserId().toString(),
-//                Long.toString(friendChatId)
 //        );
 
         friendChatRepository.delete(friendChat);
