@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 @Configuration //The class must be marked with @Configuration
 @EnableWebSecurity //Applies the configuration to the global WebSecurity
+@EnableGlobalMethodSecurity(jsr250Enabled = true) //Enables @RoleAllowed
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
     @Override
@@ -35,6 +36,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
             .httpBasic()
             .disable()
             .authorizeRequests()
+            .mvcMatchers("/ws").permitAll()
             .anyRequest()
             .authenticated();
 
