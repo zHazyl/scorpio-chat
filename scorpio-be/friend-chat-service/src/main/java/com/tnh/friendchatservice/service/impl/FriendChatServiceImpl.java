@@ -7,7 +7,7 @@ import com.tnh.friendchatservice.repository.FriendChatRepository;
 import com.tnh.friendchatservice.service.FriendChatService;
 import com.tnh.friendchatservice.utils.exception.AlreadyExistException;
 import com.tnh.friendchatservice.utils.exception.NotFoundException;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
