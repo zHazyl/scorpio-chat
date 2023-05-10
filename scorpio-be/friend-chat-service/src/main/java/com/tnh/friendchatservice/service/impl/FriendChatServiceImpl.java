@@ -2,27 +2,31 @@ package com.tnh.friendchatservice.service.impl;
 
 import com.tnh.friendchatservice.domain.ChatProfile;
 import com.tnh.friendchatservice.domain.FriendChat;
+import com.tnh.friendchatservice.domain.FriendChatRedis;
 import com.tnh.friendchatservice.repository.ChatProfileRepository;
+import com.tnh.friendchatservice.repository.FriendChatRedisRepository;
 import com.tnh.friendchatservice.repository.FriendChatRepository;
+import com.tnh.friendchatservice.repository.FriendRequestRepository;
 import com.tnh.friendchatservice.service.FriendChatService;
 import com.tnh.friendchatservice.utils.exception.AlreadyExistException;
 import com.tnh.friendchatservice.utils.exception.NotFoundException;
 import javax.transaction.Transactional;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FriendChatServiceImpl implements FriendChatService {
 
     // Dependency injection - should read this
     private final FriendChatRepository friendChatRepository;
     private final ChatProfileRepository chatProfileRepository;
+    private final FriendChatRedisRepository friendChatRedisRepository;
+    private final FriendRequestRepository friendRequestRepository;
 
-    public FriendChatServiceImpl(ChatProfileRepository chatProfileRepository, FriendChatRepository friendChatRepository) {
-        this.chatProfileRepository = chatProfileRepository;
-        this.friendChatRepository = friendChatRepository;
-    }
 
     @Transactional
     @Override
@@ -40,29 +44,44 @@ public class FriendChatServiceImpl implements FriendChatService {
 
         friendChatForSecondUser.setSender(secondUserChatProfile);
         friendChatForSecondUser.setRecipient(firstUserChatProfile);
+
         friendChatRepository.save(friendChatForFirstUser);
         friendChatRepository.save(friendChatForSecondUser);
 
         friendChatForFirstUser.setChatWith(friendChatForSecondUser);
         friendChatForSecondUser.setChatWith(friendChatForFirstUser);
 
-
         friendChatRepository.save(friendChatForFirstUser);
+        friendChatRedisRepository.save(friendChatForFirstUser);
         friendChatRepository.save(friendChatForSecondUser);
+        friendChatRedisRepository.save(friendChatForSecondUser);
 
+    }
+
+    @Override
+    public List<FriendChatRedis> getAllFriendChatsRedisBySender(
+            String currentUserId) {
+        return friendChatRedisRepository
+                .findAllBySender(currentUserId);
     }
 
     @Override
     public List<FriendChat> getAllFriendsChatsBySender(String currentUserId) {
 
         List<FriendChat> friendChats ;
-        var sender = chatProfileRepository.findById(currentUserId);
+        var sender = chatProfileRepository.findById(currentUserId)
+                .orElseThrow(() -> new NotFoundException(
+                        "User with id " + currentUserId + " not found"
+                )
+        );
 
         friendChats = friendChatRepository.findBySender(sender);
-        if (friendChats == null)
-            sender.orElseThrow(() -> new NotFoundException(
-                        "User with id " + currentUserId + " not found"));
+        if (friendChats != null) {
+            friendChats.forEach(friendChatRedisRepository::save);
+        }
+
         return friendChats;
+
     }
 
     @Transactional
@@ -76,6 +95,17 @@ public class FriendChatServiceImpl implements FriendChatService {
 //        friendRequestRepository.changeStatusFriendRequestByChatProfiles(friendChat.getSender(),
 //                friendChat.getRecipient());
 //        );
+
+        friendRequestRepository.deleteFriendRequestByChatProfiles(friendChat.getSender(),
+                friendChat.getRecipient());
+        friendChatRedisRepository.deleteFriendChat(
+                friendChat.getSender().getUserId(),
+                Long.toString(friendChatId)
+        );
+        friendChatRedisRepository.deleteFriendChat(
+                friendChat.getRecipient().getUserId(),
+                Long.toString(friendChatWithId)
+        );
 
         friendChatRepository.delete(friendChat);
     }

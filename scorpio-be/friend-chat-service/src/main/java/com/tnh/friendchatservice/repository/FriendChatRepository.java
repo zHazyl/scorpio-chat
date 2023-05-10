@@ -26,7 +26,6 @@ public interface FriendChatRepository extends JpaRepository<FriendChat, Long> {
                                                                 long friendChatWithId,
                                                                 String senderId);
 
-    @Query("SELECT fc  FROM FriendChat fc WhERE fc.sender =: sender")
-    List<FriendChat> findBySender(Optional sender);
+    List<FriendChat> findBySender(ChatProfile sender);
 
 }
