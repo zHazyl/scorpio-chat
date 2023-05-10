@@ -1,7 +1,7 @@
 spring:
   cloud:
     config:
-      name: commons, auth
+      name: commons, chat
       uri: http://20.207.203.105:8888
       fail-fast: true
       retry:
