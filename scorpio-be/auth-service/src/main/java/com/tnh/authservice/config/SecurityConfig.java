@@ -39,6 +39,8 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .mvcMatchers(HttpMethod.POST, "/users/authenticate").permitAll()
                 .mvcMatchers(HttpMethod.POST, "/users/user").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/api/v1/users/authenticate").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/api/v1/users/user").permitAll()
                 .anyRequest().authenticated();
     }
 

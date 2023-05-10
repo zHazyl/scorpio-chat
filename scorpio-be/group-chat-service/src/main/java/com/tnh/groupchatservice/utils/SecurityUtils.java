@@ -1,7 +1,7 @@
 package com.tnh.groupchatservice.utils;
 
 import com.auth0.jwt.JWT;
-import com.tnh.friendchatservice.config.KeycloakProvider;
+import com.tnh.groupchatservice.config.KeycloakProvider;
 
 public class SecurityUtils {
 

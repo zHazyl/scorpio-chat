@@ -12,7 +12,7 @@ public class CloudConfig {
 
         return builder.routes()
                 .route(predicateSpec -> predicateSpec.path("/auth-service/**")
-                                .filters(f -> f.rewritePath("/auth-service/(?<remaining>.*)", "/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
+                                .filters(f -> f.rewritePath("/auth-service/(?<remaining>.*)", "/api/v1/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
                                 .uri("lb://AUTH")
                 )
                 .route(predicateSpec -> predicateSpec.path("/group-service/**")

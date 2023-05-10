@@ -3,17 +3,21 @@ package com.tnh.authservice.service.implement;
 import com.tnh.authservice.config.KeycloakProvider;
 import com.tnh.authservice.constant.ApplicationConstants;
 import com.tnh.authservice.domain.User;
+import com.tnh.authservice.repository.UserRedisRepository;
 import com.tnh.authservice.repository.UserRepository;
 import com.tnh.authservice.service.KeycloakAdminClientService;
 import com.tnh.authservice.service.UserService;
 import com.tnh.authservice.utils.exception.AlreadyExistsException;
 import com.tnh.authservice.utils.exception.InvalidDataException;
+import com.tnh.authservice.utils.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
@@ -22,7 +26,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 @RequiredArgsConstructor
 public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
-//    private final UserRedisRepository userRedisRepository;
+    private final UserRedisRepository userRedisRepository;
     private final PasswordEncoder passwordEncoder;
     private final KeycloakProvider keycloakProvider;
     private final KeycloakAdminClientService keycloakAdminClientService;
@@ -33,11 +37,25 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public User getUserById(String id) {
-        return userRepository.findById(id).get();
+
+        User user = null;
+        try {
+            user = userRedisRepository.findUserById(id);
+        } catch (Exception e) {
+
+        }
+        if (user != null) {
+            return user;
+        }
+
+        user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not found user with id " + id));
+        userRedisRepository.save(user);
+        return user;
     }
 
     @Override
-    public User createUser(String username, String password, String email, String firstName, String lastName) {
+    public User createUser(String id, String username, String password, String email, String firstName, String lastName) {
 
         if (isEmpty(username) || isBlank(username) || !StringUtils.isAlphanumeric(username)) {
             throw new InvalidDataException("Invalid username");
@@ -66,6 +84,7 @@ public class UserServiceImplement implements UserService {
         }
 
         var user = new User();
+        user.setId(id);
         user.setUsername(username);
         user.setPassword_hash(passwordEncoder.encode(password));
         user.setFirst_name(StringUtils.capitalize(firstName.toLowerCase()));

@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://hn.database.windows.net:1433;database=frienddb;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;
-    username: 'hazy@hn'
-    password: '@h0917815161'
+    url: jdbc:sqlserver://TNHANH1:1433;database=frienddb;encrypt=true;trustServerCertificate=true;loginTimeout=30;
+    username: 'sa'
+    password: '@Tnh210302h'
   #  jpa:
   #    hibernate:
   #      ddl-auto: validate
@@ -38,7 +38,7 @@ keycloak:
   ssl-required: none
   resource: frontend
   credentials:
-    secret: EarKnJAhU1RdbZLrfICK0n2ZBBK5aOd7
+    secret: kdbpRyboh10hWnntZkMyLcYHc8mnauC3
   use-resource-role-mappings: true
   bearer-only: true
 server:
