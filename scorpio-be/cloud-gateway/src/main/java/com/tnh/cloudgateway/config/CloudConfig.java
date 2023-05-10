@@ -12,8 +12,25 @@ public class CloudConfig {
 
         return builder.routes()
                 .route(predicateSpec -> predicateSpec.path("/auth-service/**")
-                                .filters(f -> f.rewritePath("/auth-service/(?<remaining>.*)", "/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
+                                .filters(f -> f.rewritePath("/auth-service/(?<remaining>.*)", "/api/v1/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
                                 .uri("lb://AUTH")
+                )
+                .route(predicateSpec -> predicateSpec.path("/group-service/**")
+                        .filters(f -> f.rewritePath("/group-service/(?<remaining>.*)", "/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
+                        .uri("lb://GROUPCHAT")
+                )
+                .route(predicateSpec -> predicateSpec.path("/chat-service/**")
+                                .filters(f -> f.rewritePath("/chat-service/(?<remaining>.*)", "/${remaining}"))
+                                .uri("lb://FRIENDCHAT")
+                )
+                .route(predicateSpec -> predicateSpec.path("/chat-messages-service/**")
+                                .filters(f -> f.rewritePath("/chat-messages-service/(?<remaining>.*)", "/${remaining}"))
+                                .uri("lb://CHAT-MESSAGES")
+                )
+                //add removeRequestHeader= Cookie, Set-cookie to propagate authorization HTTP heaader
+                .route(predicateSpec -> predicateSpec.path("/messages-websocket-service/**")
+                                .filters(f -> f.rewritePath("/messages-websocket-service/(?<remaining>.*)", "/${remaining}").removeRequestHeader("Cookie,Set-Cookie"))
+                                .uri("lb://MESSAGES-WEBSOCKET")
                 )
                 .build();
     }

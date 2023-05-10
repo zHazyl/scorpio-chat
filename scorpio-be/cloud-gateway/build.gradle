@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.4'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '2.7.5'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
     id 'com.palantir.docker' version '0.34.0'
     id 'com.palantir.docker-run' version '0.34.0'
 }
@@ -16,13 +16,15 @@ repositories {
 }
 
 ext {
-    set('springCloudVersion', "2022.0.1")
+    set('springCloudVersion', "2021.0.4")
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client') {
+        exclude group: "javax.ws.rs", module: "jsr311-api"
+    }
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

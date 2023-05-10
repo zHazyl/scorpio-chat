@@ -1,20 +1,82 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.0.4'
-    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.springframework.boot' version '2.7.4'
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'com.palantir.docker' version '0.34.0'
+    id 'com.palantir.docker-run' version '0.34.0'
 }
 
 group = 'com.tnh'
 version = '1.0.2-SNAPSHOT'
 sourceCompatibility = '17'
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
     mavenCentral()
+    maven { url 'https://artifactory-oss.prod.netflix.net/artifactory/maven-oss-candidates' }
+}
+
+ext {
+    set('springCloudVersion', "2021.0.4")
+    mapstructVersion = "1.5.3.Final"
+    keycloakVersion = "16.1.0"
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-messaging'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.cloud:spring-cloud-starter'
+    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client') {
+        exclude group: "javax.ws.rs", module: "jsr311-api"
+    }
+    implementation 'org.keycloak:keycloak-spring-boot-starter'
+    implementation 'com.mashape.unirest:unirest-java:1.4.9'
+    implementation 'org.keycloak:keycloak-admin-client:16.1.0'
+    implementation 'com.auth0:java-jwt:3.12.0'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework:spring-messaging'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.keycloak.bom:keycloak-adapter-bom:${keycloakVersion}"
+    }
+}
+
+docker {
+    name "zhazy/${project.name}:${project.version}"
+    files "$buildDir/libs/${project.name}-${project.version}.jar"
+    buildArgs([JAR_FILE: "${project.name}-${project.version}.jar"])
+}
+
+dockerRun {
+    name "${project.name}"
+    image "zhazy/${project.name}:${project.version}"
+    ports '8080:8080'
+    clean true
+    daemonize false
 }
 
 tasks.named('test') {
