@@ -11,8 +11,10 @@ import java.util.UUID;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    @Mapping(target = "password", ignore = true)
 //    @Mapping(target = "id", expression = "java(convertIdToString(user.getId()))")
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "firstName", source = "first_name")
+    @Mapping(target = "lastName", source = "last_name")
     UserDTO mapToUserDTO(User user);
 
     @InheritConfiguration(name = "mapToUserDTO")
