@@ -58,7 +58,7 @@ public class FriendChatDevController {
                 .body(friendChatList);
     }
 
-    @GetMapping("/api/v1/group-chats")
+    @GetMapping("/group-chats")
     public ResponseEntity<List<Object>> getAllGroupsChats() {
 
         return ResponseEntity.ok()
