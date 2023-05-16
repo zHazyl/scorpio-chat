@@ -2,7 +2,7 @@ spring:
   cloud:
     config:
       name: commons, chat
-      uri: http://ec2-3-91-71-127.compute-1.amazonaws.com:8888
+      uri: http://10.114.0.2:8888
       fail-fast: true
       retry:
         max-attempts: 20
