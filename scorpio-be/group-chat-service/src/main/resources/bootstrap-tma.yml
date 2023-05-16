@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://TNHANH1:1433;database=groupdb;encrypt=true;trustServerCertificate=true;loginTimeout=30;
+    username: 'sa'
+    password: '@Tnh210302h'
+  #  jpa:
+  #    hibernate:
+  #      ddl-auto: validate
+  rabbitmq:
+    host: localhost
+    username: rabbitmq-user
+    password: rabbitmq-pass-123
+  redis:
+    host: 127.0.0.1
+    port: 6379
+
+logging:
+  level:
+    com:
+      tnh:
+        authservice: debug
+eureka:
+  instance:
+    instance-id: ${spring.application.name}-${random.int}
+    #    hostname: localhost
+    #    ip-address: 127.0.0.1
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+    healthcheck:
+      enabled: true
+keycloak:
+  realm: scorpius
+  auth-server-url: http://localhost:8180/auth
+  ssl-required: none
+  resource: frontend
+  credentials:
+    secret: kdbpRyboh10hWnntZkMyLcYHc8mnauC3
+  use-resource-role-mappings: true
+  bearer-only: true
+server:
+  port: 0
