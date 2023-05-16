@@ -32,7 +32,7 @@ services:
       # Same values as the mysql-kc service
       DB_USER: keycloak_user
       DB_PASSWORD: keycloak_password
-      DB_DATABASE: keycloak_db
+      DB_DATABASE: keycloakdb
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
     depends_on:
@@ -64,7 +64,7 @@ services:
       # is going to create and use
       MYSQL_USER: keycloak_user
       MYSQL_PASSWORD: keycloak_password
-      MYSQL_DATABASE: keycloak_db
+      MYSQL_DATABASE: keycloakdb
       MYSQL_TCP_PORT: 3366
       # Self-Explanatory
       MYSQL_ROOT_PASSWORD: root_password
