@@ -15,6 +15,7 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "firstName", source = "first_name")
     @Mapping(target = "lastName", source = "last_name")
+    @Mapping(target = "email", source = "email")
     UserDTO mapToUserDTO(User user);
 
     @InheritConfiguration(name = "mapToUserDTO")

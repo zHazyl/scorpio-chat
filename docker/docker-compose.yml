@@ -27,16 +27,16 @@ services:
       KEYCLOAK_IMPORT: /opt/jboss/keycloak/imports/realm-export.json -Dkeycloak.profile.feature.upload_scripts=enabled
       KEYCLOAK_PASSWORD: admin
       DB_VENDOR: mysql
-      DB_ADDR: mysql-kc
-      DB_PORT: 3366
+      DB_ADDR: keycloakdb.cunbs9tv8nhr.us-east-1.rds.amazonaws.com
+      DB_PORT: 3306
       # Same values as the mysql-kc service
       DB_USER: keycloak_user
       DB_PASSWORD: keycloak_password
-      DB_DATABASE: keycloak_db
+      DB_DATABASE: keycloakdb
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
-    depends_on:
-      - mysql-kc
+#    depends_on:
+#      - mysql-kc
     networks:
       - scorpio-wu
   #DATABASES
@@ -64,7 +64,7 @@ services:
       # is going to create and use
       MYSQL_USER: keycloak_user
       MYSQL_PASSWORD: keycloak_password
-      MYSQL_DATABASE: keycloak_db
+      MYSQL_DATABASE: keycloakdb
       MYSQL_TCP_PORT: 3366
       # Self-Explanatory
       MYSQL_ROOT_PASSWORD: root_password

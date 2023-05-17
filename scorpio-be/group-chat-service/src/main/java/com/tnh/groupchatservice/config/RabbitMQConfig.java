@@ -20,7 +20,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue newUsersQueue() {
-        return new Queue("com.tnh.chatservice.account");
+        return new Queue("com.tnh.groupchatservice.account");
     }
 
     @Bean

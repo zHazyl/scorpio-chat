@@ -11,6 +11,7 @@ import com.tnh.authservice.model.TokenResponse;
 import com.tnh.authservice.service.KeycloakAdminClientService;
 import com.tnh.authservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -61,7 +63,6 @@ public class UserController {
     @PostMapping("/authenticate")
     public ResponseEntity<TokenResponse> login(@NotNull @RequestBody AuthRequestModel authRequestModel) {
 
-
         TokenResponse tokenResponse = null;
         try {
             Keycloak keycloak = keycloakProvider.newKeycloakBuilderWithPasswordCredentials(authRequestModel.getUsername(), authRequestModel.getPassword()).build();
@@ -76,9 +77,18 @@ public class UserController {
         }
     }
     @GetMapping (path = "/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable(value = "id") String id){
-        return ResponseEntity.ok(userMapper.mapToUserDTO(userService.getUserById(id)));
+    public ResponseEntity<UserDTO> getUserById(@PathVariable(value = "id") String id) {
+        UserDTO user = userMapper.mapToUserDTO(userService.getUserById(id));
+        log.debug(user.getEmail());
+        return ResponseEntity.ok(user);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserDTO> editUser(@PathVariable("id") String userId, @RequestBody UserDTO userDTO) {
+        var user = userService.modifyUser(userId, userDTO.getFirstName(), userDTO.getLastName());
+        return ResponseEntity.ok(userMapper.mapToUserDTO(user));
+    }
+
 //    @PutMapping(path = "/{id}")
 //    public boolean updateUserById(@PathVariable("id") Long id,
 //                                  @RequestParam(required = false) String password_hash,
