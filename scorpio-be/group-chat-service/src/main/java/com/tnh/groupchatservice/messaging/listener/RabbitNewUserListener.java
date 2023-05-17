@@ -25,7 +25,7 @@ public class RabbitNewUserListener {
             exchange = @Exchange("com.tnh.authservice.fanout"),
             key = "group",
             value = @Queue("#{newUsersQueue.name}")),
-            queues = "#{newUsersQueue.name}",
+//            queues = "#{newUsersQueue.name}",
             messageConverter = "Jackson2JsonMessageConverter"
     )
     public void receiveNewUser(UserDTO userDTO) {
