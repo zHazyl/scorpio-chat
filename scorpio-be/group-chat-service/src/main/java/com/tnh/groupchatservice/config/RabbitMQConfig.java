@@ -20,13 +20,13 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue newUsersQueue() {
-        return new Queue("com.tnh.chatservice.account");
+        return new Queue("com.tnh.groupchatservice.account");
     }
 
-//    @Bean
-//    public Binding newUser(FanoutExchange fanoutExchange, Queue newUsersQueue) {
-//        return BindingBuilder.bind(newUsersQueue).to(fanoutExchange);
-//    }
+    @Bean
+    public Binding newUser(FanoutExchange fanoutExchange, Queue newUsersQueue) {
+        return BindingBuilder.bind(newUsersQueue).to(fanoutExchange);
+    }
 
 //    @Bean
 //    public FanoutExchange deletingMessageExchange() {
