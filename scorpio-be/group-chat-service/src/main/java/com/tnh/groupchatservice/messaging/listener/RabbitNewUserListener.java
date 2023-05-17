@@ -22,7 +22,7 @@ public class RabbitNewUserListener {
 
 //    @RabbitListener(queues = "#{newUsersQueue.name}", messageConverter = "Jackson2JsonMessageConverter")
     @RabbitListener(bindings = @QueueBinding(
-            exchange = @Exchange("com.tnh.authservice.fanout"),
+            exchange = @Exchange(value = "com.tnh.authservice.fanout", type = "fanout"),
             key = "group",
             value = @Queue("#{newUsersQueue.name}")),
 //            queues = "#{newUsersQueue.name}",
