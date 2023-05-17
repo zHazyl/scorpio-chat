@@ -21,7 +21,8 @@ public class UserSender {
         var converter = template.getMessageConverter();
         var messageProperties = new MessageProperties();
         var message = converter.toMessage(userDTO, messageProperties);
-        template.send(fanout.getName(), "", message);
+        template.send(fanout.getName(), "friend", message);
+        template.send(fanout.getName(), "group", message);
     }
 
 }
