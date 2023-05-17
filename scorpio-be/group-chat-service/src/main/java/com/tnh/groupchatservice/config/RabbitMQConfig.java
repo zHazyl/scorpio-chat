@@ -23,10 +23,10 @@ public class RabbitMQConfig {
         return new Queue("com.tnh.chatservice.account");
     }
 
-    @Bean
-    public Binding newUser(FanoutExchange fanoutExchange, Queue newUsersQueue) {
-        return BindingBuilder.bind(newUsersQueue).to(fanoutExchange);
-    }
+//    @Bean
+//    public Binding newUser(FanoutExchange fanoutExchange, Queue newUsersQueue) {
+//        return BindingBuilder.bind(newUsersQueue).to(fanoutExchange);
+//    }
 
 //    @Bean
 //    public FanoutExchange deletingMessageExchange() {
