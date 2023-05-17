@@ -2,10 +2,12 @@ package com.tnh.authservice.repository;
 
 import com.tnh.authservice.domain.User;
 import com.tnh.authservice.domain.UserRedis;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Slf4j
 public class UserRedisRepository {
     private final RedisTemplate template;
 
@@ -16,12 +18,14 @@ public class UserRedisRepository {
     public static final String HASH_KEY = "UserRedis";
 
     public User save(User user) {
-        template.opsForHash().put(HASH_KEY, user.getId(),
-                new UserRedis(user.getId(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getFirst_name(),
-                        user.getLast_name()));
+        var userRedis = new UserRedis(user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFirst_name(),
+                user.getLast_name());
+        log.debug(user.getEmail());
+        userRedis.setEmail(user.getEmail());
+        template.opsForHash().put(HASH_KEY, user.getId(), userRedis);
         return user;
     }
 

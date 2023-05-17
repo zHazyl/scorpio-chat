@@ -9,7 +9,6 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 
-@AllArgsConstructor
 @RedisHash("UserRedis")
 @Getter
 @Setter
@@ -21,6 +20,15 @@ public class UserRedis implements Serializable {
     private String username;
     private String email;
     private String firstName;
+
+    public UserRedis(String id, String username, String email, String firstName, String lastName) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     private String lastName;
 
 }
