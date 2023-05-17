@@ -23,8 +23,6 @@ public class UserRedisRepository {
                 user.getEmail(),
                 user.getFirst_name(),
                 user.getLast_name());
-        log.debug(user.getEmail());
-        userRedis.setEmail(user.getEmail());
         template.opsForHash().put(HASH_KEY, user.getId(), userRedis);
         return user;
     }
@@ -33,7 +31,7 @@ public class UserRedisRepository {
         UserRedis userRedis = (UserRedis) template.opsForHash().get(HASH_KEY, id);
         User user = new User();
         user.setUsername(userRedis.getUsername());
-        user.setEmail(user.getEmail());
+        user.setEmail(userRedis.getEmail());
         user.setFirst_name(userRedis.getFirstName());
         user.setLast_name(userRedis.getLastName());
         return user;
