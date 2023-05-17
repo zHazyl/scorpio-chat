@@ -12,6 +12,7 @@ import com.tnh.authservice.utils.exception.AlreadyExistsException;
 import com.tnh.authservice.utils.exception.InvalidDataException;
 import com.tnh.authservice.utils.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
@@ -24,6 +25,7 @@ import static org.apache.commons.lang.StringUtils.*;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
@@ -42,6 +44,7 @@ public class UserServiceImplement implements UserService {
         User user = null;
         try {
             user = userRedisRepository.findUserById(id);
+            log.debug(user.getEmail());
         } catch (Exception e) {
 
         }
