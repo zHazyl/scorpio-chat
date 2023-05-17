@@ -7,6 +7,7 @@ import com.tnh.authservice.repository.UserRedisRepository;
 import com.tnh.authservice.repository.UserRepository;
 import com.tnh.authservice.service.KeycloakAdminClientService;
 import com.tnh.authservice.service.UserService;
+import com.tnh.authservice.utils.SecurityUtils;
 import com.tnh.authservice.utils.exception.AlreadyExistsException;
 import com.tnh.authservice.utils.exception.InvalidDataException;
 import com.tnh.authservice.utils.exception.NotFoundException;
@@ -19,8 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
-import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Service
 @RequiredArgsConstructor
@@ -94,6 +95,33 @@ public class UserServiceImplement implements UserService {
         return userRepository.save(user);
     }
 
+    @Override
+    public User modifyUser(String id, String firstName, String lastName) {
+
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Not found user with id " + id));
+        throwExceptionIfNotCurrentUser(user);
+
+        if (isNotEmpty(firstName)) {
+            user.setFirst_name(StringUtils.capitalize(firstName.toLowerCase()
+                    .replaceAll(" ", "")));
+        }
+
+        if (isNotEmpty(lastName)) {
+            user.setLast_name(StringUtils.capitalize(lastName.toLowerCase()
+                    .replaceAll(" ", "")));
+        }
+
+        try {
+            userRedisRepository.deleteUser(id);
+            userRedisRepository.save(user);
+        } catch (Exception e) {
+
+        }
+
+        return userRepository.save(user);
+    }
+
 //    @Override
 //    public boolean updateUserById(Long id, String password_hash, String first_name, String last_name, String email) {
 //        User user = userRepository.findById(id)
@@ -109,4 +137,11 @@ public class UserServiceImplement implements UserService {
     public void deleteUserById(String id) {
             userRepository.deleteById(id);
     }
+
+    private void throwExceptionIfNotCurrentUser(User user) {
+        if (!user.getUsername().toString().equals(SecurityUtils.getCurrentUserPreferredUsername(keycloakProvider))) {
+            throw new InvalidDataException("Incorrect user id");
+        }
+    }
+
 }

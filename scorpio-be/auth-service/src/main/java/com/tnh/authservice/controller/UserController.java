@@ -78,6 +78,13 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable(value = "id") String id){
         return ResponseEntity.ok(userMapper.mapToUserDTO(userService.getUserById(id)));
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserDTO> editUser(@PathVariable("id") String userId, @RequestBody UserDTO userDTO) {
+        var user = userService.modifyUser(userId, userDTO.getFirstName(), userDTO.getLastName());
+        return ResponseEntity.ok(userMapper.mapToUserDTO(user));
+    }
+
 //    @PutMapping(path = "/{id}")
 //    public boolean updateUserById(@PathVariable("id") Long id,
 //                                  @RequestParam(required = false) String password_hash,
