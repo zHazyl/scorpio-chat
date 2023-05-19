@@ -36,7 +36,8 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<UserDTO> createNewUser(@Valid @RequestBody UserDTO userDTO,
-                                                 UriComponentsBuilder uriComponentsBuilder) {
+                                                 UriComponentsBuilder uriComponentsBuilder) throws InterruptedException {
+
         keycloakAdminClientService.createKeycloakUser(userDTO);
 
         Keycloak keycloak = keycloakProvider.newKeycloakBuilderWithPasswordCredentials(userDTO.getUsername(), userDTO.getPassword()).build();
@@ -51,13 +52,16 @@ public class UserController {
         }
         var decode = JWT.decode(token);
         var id = decode.getSubject();
-        var user = userService.createUser(id, userDTO.getUsername(), userDTO.getPassword(),
-                userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
+        if (userService.getUserById(id) != null) {
+            throw new RuntimeException();
+        }
+//        var user = userService.createUser(id, userDTO.getUsername(), userDTO.getPassword(),
+//                userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
         userDTO.setId(id);
         userSender.send(userDTO);
 
         var location = uriComponentsBuilder.path("/users/{id}")
-                .buildAndExpand(user.getId()).toUri();
+                .buildAndExpand(id).toUri();
         return ResponseEntity.created(location).body(userDTO);
     }
     @PostMapping("/authenticate")

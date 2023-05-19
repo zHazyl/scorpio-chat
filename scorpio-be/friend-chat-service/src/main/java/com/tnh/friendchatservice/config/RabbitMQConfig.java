@@ -1,5 +1,6 @@
 package com.tnh.friendchatservice.config;
 
+import com.tnh.friendchatservice.messaging.sender.CompensateNewUser;
 import com.tnh.friendchatservice.messaging.sender.DeleteMessagesSender;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -37,6 +38,11 @@ public class RabbitMQConfig {
     @Bean
     public DeleteMessagesSender deleteMessagesSender(RabbitTemplate rabbitTemplate, FanoutExchange deletingMessageExchange) {
         return new DeleteMessagesSender(rabbitTemplate, deletingMessageExchange);
+    }
+
+    @Bean
+    public CompensateNewUser compensateNewUser(RabbitTemplate rabbitTemplate, FanoutExchange fanoutExchange) {
+        return new CompensateNewUser(rabbitTemplate, fanoutExchange);
     }
 
     @Bean("Jackson2JsonMessageConverter")

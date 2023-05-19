@@ -1,5 +1,6 @@
 package com.tnh.groupchatservice.config;
 
+import com.tnh.groupchatservice.messaging.sender.CompensateNewUser;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
@@ -37,6 +38,11 @@ public class RabbitMQConfig {
 //    public DeleteMessagesSender deleteMessagesSender(RabbitTemplate rabbitTemplate, FanoutExchange deletingMessageExchange) {
 //        return new DeleteMessagesSender(rabbitTemplate, deletingMessageExchange);
 //    }
+
+    @Bean
+    public CompensateNewUser compensateNewUser(RabbitTemplate rabbitTemplate, FanoutExchange fanoutExchange) {
+        return new CompensateNewUser(rabbitTemplate, fanoutExchange);
+    }
 
     @Bean("Jackson2JsonMessageConverter")
     Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
