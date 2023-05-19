@@ -18,6 +18,15 @@ public class RabbitMQConfig {
     public FanoutExchange fanoutExchange() {
         return new FanoutExchange("com.tnh.authservice.fanout");
     }
+    @Bean
+    public FanoutExchange votingExchange() {
+        return new FanoutExchange("com.tnh.authservicevoting.fanout");
+    }
+
+    @Bean
+    public FanoutExchange implVotingExchange() {
+        return new FanoutExchange("com.tnh.groupchatservice.fanout.voting");
+    }
 
     @Bean
     public Queue newUsersQueue() {
@@ -25,9 +34,20 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue votingQueue() {
+        return new Queue("com.tnh.groupchatservice.voting");
+    }
+
+    @Bean
     public Binding newUser(FanoutExchange fanoutExchange, Queue newUsersQueue) {
         return BindingBuilder.bind(newUsersQueue).to(fanoutExchange);
     }
+
+    @Bean
+    public Binding voting(FanoutExchange votingExchange, Queue votingQueue) {
+        return BindingBuilder.bind(votingQueue).to(votingExchange);
+    }
+
 
 //    @Bean
 //    public FanoutExchange deletingMessageExchange() {
@@ -40,8 +60,8 @@ public class RabbitMQConfig {
 //    }
 
     @Bean
-    public CompensateNewUser compensateNewUser(RabbitTemplate rabbitTemplate, FanoutExchange fanoutExchange) {
-        return new CompensateNewUser(rabbitTemplate, fanoutExchange);
+    public CompensateNewUser compensateNewUser(RabbitTemplate rabbitTemplate, FanoutExchange implVotingExchange) {
+        return new CompensateNewUser(rabbitTemplate, implVotingExchange);
     }
 
     @Bean("Jackson2JsonMessageConverter")

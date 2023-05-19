@@ -30,7 +30,6 @@ import java.util.UUID;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final UserSender userSender;
     private final KeycloakAdminClientService keycloakAdminClientService;
     private final KeycloakProvider keycloakProvider;
 
@@ -52,17 +51,20 @@ public class UserController {
         }
         var decode = JWT.decode(token);
         var id = decode.getSubject();
-        if (userService.getUserById(id) != null) {
-            throw new RuntimeException();
+        try {
+            userService.getUserById(id);
+        } catch (Exception e){
+            userDTO.setId(id);
+//            userSender.send(userDTO);
+            userService.voting(userDTO);
+
+            var location = uriComponentsBuilder.path("/users/{id}")
+                    .buildAndExpand(id).toUri();
+            return ResponseEntity.created(location).body(userDTO);
         }
 //        var user = userService.createUser(id, userDTO.getUsername(), userDTO.getPassword(),
 //                userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
-        userDTO.setId(id);
-        userSender.send(userDTO);
-
-        var location = uriComponentsBuilder.path("/users/{id}")
-                .buildAndExpand(id).toUri();
-        return ResponseEntity.created(location).body(userDTO);
+        throw new RuntimeException();
     }
     @PostMapping("/authenticate")
     public ResponseEntity<TokenResponse> login(@NotNull @RequestBody AuthRequestModel authRequestModel) {

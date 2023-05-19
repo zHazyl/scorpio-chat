@@ -15,7 +15,7 @@ public class CompensateNewUser {
         var converter = template.getMessageConverter();
         var messageProperties = new MessageProperties();
         var message = converter.toMessage(id, messageProperties);
-        template.send(fanout.getName(), "friend-compensate", message);
+        template.send(fanout.getName(), "", message);
     }
 
 }
