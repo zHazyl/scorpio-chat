@@ -1,8 +1,6 @@
 package com.tnh.authservice.service;
 
 import com.tnh.authservice.domain.User;
-import com.tnh.authservice.dto.UserDTO;
-import org.springframework.amqp.core.Message;
 
 public interface UserService {
 
@@ -15,6 +13,5 @@ public interface UserService {
 
 //    boolean updateUserById (Long id, String password_hash, String first_name, String last_name, String email);
     void deleteUserById (String id);
-    void voting(UserDTO userDTO);
 }
 

@@ -3,9 +3,6 @@ package com.tnh.authservice.service.implement;
 import com.tnh.authservice.config.KeycloakProvider;
 import com.tnh.authservice.constant.ApplicationConstants;
 import com.tnh.authservice.domain.User;
-import com.tnh.authservice.dto.UserDTO;
-import com.tnh.authservice.messaging.sender.UserSender;
-import com.tnh.authservice.messaging.sender.VotingSender;
 import com.tnh.authservice.repository.UserRedisRepository;
 import com.tnh.authservice.repository.UserRepository;
 import com.tnh.authservice.service.KeycloakAdminClientService;
@@ -19,19 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static org.apache.commons.lang.StringUtils.*;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
@@ -45,11 +33,6 @@ public class UserServiceImplement implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final KeycloakProvider keycloakProvider;
     private final KeycloakAdminClientService keycloakAdminClientService;
-    private final UserSender userSender;
-    private final VotingSender votingSender;
-
-    public static Map<String, Integer> friend = new HashMap<>();
-    public static Map<String, Integer> group = new HashMap<>();
     @Override
     public User createNewUser (User user) {
         return userRepository.save(user);
@@ -156,35 +139,6 @@ public class UserServiceImplement implements UserService {
     @Override
     public void deleteUserById(String id) {
             userRepository.deleteById(id);
-    }
-
-    public void voting(UserDTO userDTO) {
-        String id = userDTO.getId();
-        friend.put(id, 0);
-        group.put(id, 0);
-        votingSender.vote(userDTO);
-        ExecutorService threadpool = Executors.newCachedThreadPool();
-        threadpool.submit(() -> {
-            int count = 0;
-            while (count <= 3) {
-                if (friend.get(id) == 1 && group.get(id) == 1) {
-                    createUser(id, userDTO.getUsername(), userDTO.getPassword(),
-                            userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
-                    userSender.send(userDTO);
-                    break;
-                }
-                if (friend.get(id) == -1 && group.get(id) == -1 || count == 3) {
-                    keycloakProvider.getInstance().realm(keycloakProvider.getRealm()).users().get(id).remove();
-                    break;
-                }
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                    count++;
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
     }
 
     private void throwExceptionIfNotCurrentUser(User user) {
