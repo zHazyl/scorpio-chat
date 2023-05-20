@@ -10,6 +10,7 @@ import com.tnh.authservice.model.AuthRequestModel;
 import com.tnh.authservice.model.TokenResponse;
 import com.tnh.authservice.service.KeycloakAdminClientService;
 import com.tnh.authservice.service.UserService;
+import com.tnh.authservice.utils.exception.AlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
@@ -36,8 +37,11 @@ public class UserController {
     @PostMapping("/user")
     public ResponseEntity<UserDTO> createNewUser(@Valid @RequestBody UserDTO userDTO,
                                                  UriComponentsBuilder uriComponentsBuilder) throws InterruptedException {
-
-        keycloakAdminClientService.createKeycloakUser(userDTO);
+        try {
+            keycloakAdminClientService.createKeycloakUser(userDTO);
+        } catch(Exception e) {
+            throw new AlreadyExistsException("User is exist");
+        }
 
         Keycloak keycloak = keycloakProvider.newKeycloakBuilderWithPasswordCredentials(userDTO.getUsername(), userDTO.getPassword()).build();
 
