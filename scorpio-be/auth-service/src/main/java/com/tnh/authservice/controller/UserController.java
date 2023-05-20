@@ -36,7 +36,7 @@ public class UserController {
 
     @PostMapping("/user")
     public ResponseEntity<UserDTO> createNewUser(@Valid @RequestBody UserDTO userDTO,
-                                                 UriComponentsBuilder uriComponentsBuilder) throws InterruptedException {
+                                                 UriComponentsBuilder uriComponentsBuilder) {
         try {
             keycloakAdminClientService.createKeycloakUser(userDTO);
         } catch(Exception e) {
