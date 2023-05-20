@@ -5,24 +5,19 @@ import com.tnh.groupchatservice.mapper.GroupMemberMapper;
 import com.tnh.groupchatservice.service.GroupMemberService;
 import com.tnh.groupchatservice.utils.SecurityUtils;
 import com.tnh.groupchatservice.utils.exception.InvalidDataException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/group-member")
 public class GroupMemberController {
 
     private final GroupMemberService groupMemberService;
-
     private final GroupMemberMapper groupMemberMapper;
-
-    public GroupMemberController(GroupMemberService groupMemberService,
-                                 GroupMemberMapper groupMemberMapper) {
-        this.groupMemberService = groupMemberService;
-        this.groupMemberMapper = groupMemberMapper;
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<List<GroupMemberDTO>> getGroupsMembersById(@PathVariable("id") Long id) {
