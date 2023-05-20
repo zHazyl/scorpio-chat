@@ -68,7 +68,7 @@ public class UserController {
         }
 //        var user = userService.createUser(id, userDTO.getUsername(), userDTO.getPassword(),
 //                userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
-        throw new RuntimeException();
+        throw new AlreadyExistsException("User is exist");
     }
     @PostMapping("/authenticate")
     public ResponseEntity<TokenResponse> login(@NotNull @RequestBody AuthRequestModel authRequestModel) {
