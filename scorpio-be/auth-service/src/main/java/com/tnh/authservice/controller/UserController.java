@@ -62,7 +62,6 @@ public class UserController {
             userService.getUserById(id);
         } catch (Exception e){
             userDTO.setId(id);
-//            userSender.send(userDTO);
             userService.voting(userDTO);
 
             var location = uriComponentsBuilder.path("/users/{id}")
