@@ -11,20 +11,29 @@ import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RabbitNewUserListener {
+public class VotingListener {
 
     private final ChatProfileService chatProfileService;
+    private final CompensateNewUser compensateNewUser;
 
-
-    @RabbitListener(queues = "#{newUsersQueue.name}", messageConverter = "Jackson2JsonMessageConverter")
-    public void receiveNewUser(UserDTO userDTO) {
-        log.debug("New user {}", userDTO.getUsername());
-        chatProfileService.createChatProfile(userDTO.getId(), userDTO.getUsername());
+    @RabbitListener(
+            queues = "#{votingQueue.name}",
+            messageConverter = "Jackson2JsonMessageConverter"
+    )
+    public void voting(UserDTO userDTO) {
+        String[] id = new String[2];
+        id[0] = userDTO.getId();
+        try {
+            chatProfileService.getChatProfileById(userDTO.getId());
+            id[1] = String.valueOf(-1);
+            compensateNewUser.sendCompensate(id);
+        } catch (Exception e) {
+            id[1] = String.valueOf(1);
+            compensateNewUser.sendCompensate(id);
+        }
     }
 
 }

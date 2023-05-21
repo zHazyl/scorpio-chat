@@ -10,6 +10,7 @@ import com.tnh.authservice.model.AuthRequestModel;
 import com.tnh.authservice.model.TokenResponse;
 import com.tnh.authservice.service.KeycloakAdminClientService;
 import com.tnh.authservice.service.UserService;
+import com.tnh.authservice.utils.exception.AlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
@@ -30,35 +31,47 @@ import java.util.UUID;
 public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final UserSender userSender;
     private final KeycloakAdminClientService keycloakAdminClientService;
     private final KeycloakProvider keycloakProvider;
 
     @PostMapping("/user")
     public ResponseEntity<UserDTO> createNewUser(@Valid @RequestBody UserDTO userDTO,
                                                  UriComponentsBuilder uriComponentsBuilder) {
-        keycloakAdminClientService.createKeycloakUser(userDTO);
-
-        Keycloak keycloak = keycloakProvider.newKeycloakBuilderWithPasswordCredentials(userDTO.getUsername(), userDTO.getPassword()).build();
-
-        AccessTokenResponse accessTokenResponse = null;
-        String token = null;
         try {
-            accessTokenResponse = keycloak.tokenManager().getAccessToken();
-            token = accessTokenResponse.getToken();
-        } catch (Exception e) {
-
+            keycloakAdminClientService.createKeycloakUser(userDTO);
+        } catch(Exception e) {
+            throw new AlreadyExistsException("User is exist");
         }
-        var decode = JWT.decode(token);
-        var id = decode.getSubject();
-        var user = userService.createUser(id, userDTO.getUsername(), userDTO.getPassword(),
-                userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
-        userDTO.setId(id);
-        userSender.send(userDTO);
 
-        var location = uriComponentsBuilder.path("/users/{id}")
-                .buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(location).body(userDTO);
+//        Keycloak keycloak = keycloakProvider.newKeycloakBuilderWithPasswordCredentials(userDTO.getUsername(), userDTO.getPassword()).build();
+//
+//        AccessTokenResponse accessTokenResponse = null;
+//        String token = null;
+//        try {
+//            accessTokenResponse = keycloak.tokenManager().getAccessToken();
+//            token = accessTokenResponse.getToken();
+//        } catch (Exception e) {
+//
+//        }
+//        var decode = JWT.decode(token);
+//        var id = decode.getSubject();
+        String id = keycloakProvider.getInstance().realm(
+                keycloakProvider.getRealm()
+        ).users().search(userDTO.getUsername()).get(0).getId();
+        try {
+            userService.getUserById(id);
+        } catch (Exception e){
+            userDTO.setId(id);
+//            userSender.send(userDTO);
+            userService.voting(userDTO);
+
+            var location = uriComponentsBuilder.path("/users/{id}")
+                    .buildAndExpand(id).toUri();
+            return ResponseEntity.created(location).body(userDTO);
+        }
+//        var user = userService.createUser(id, userDTO.getUsername(), userDTO.getPassword(),
+//                userDTO.getEmail(), userDTO.getFirstName(), userDTO.getLastName());
+        throw new AlreadyExistsException("User is exist");
     }
     @PostMapping("/authenticate")
     public ResponseEntity<TokenResponse> login(@NotNull @RequestBody AuthRequestModel authRequestModel) {
