@@ -50,10 +50,10 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
         if (response.getStatus() == 201) {
             // if you want to save the user to your other database, do it here:
             // I already have saved befor
-            throw new AlreadyExistsException("User is exist");
+            return response;
         }
 
-        return response;
+        throw new AlreadyExistsException("User is exist");
 
     }
 

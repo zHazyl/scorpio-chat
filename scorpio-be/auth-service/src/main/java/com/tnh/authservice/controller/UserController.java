@@ -43,18 +43,21 @@ public class UserController {
             throw new AlreadyExistsException("User is exist");
         }
 
-        Keycloak keycloak = keycloakProvider.newKeycloakBuilderWithPasswordCredentials(userDTO.getUsername(), userDTO.getPassword()).build();
-
-        AccessTokenResponse accessTokenResponse = null;
-        String token = null;
-        try {
-            accessTokenResponse = keycloak.tokenManager().getAccessToken();
-            token = accessTokenResponse.getToken();
-        } catch (Exception e) {
-
-        }
-        var decode = JWT.decode(token);
-        var id = decode.getSubject();
+//        Keycloak keycloak = keycloakProvider.newKeycloakBuilderWithPasswordCredentials(userDTO.getUsername(), userDTO.getPassword()).build();
+//
+//        AccessTokenResponse accessTokenResponse = null;
+//        String token = null;
+//        try {
+//            accessTokenResponse = keycloak.tokenManager().getAccessToken();
+//            token = accessTokenResponse.getToken();
+//        } catch (Exception e) {
+//
+//        }
+//        var decode = JWT.decode(token);
+//        var id = decode.getSubject();
+        String id = keycloakProvider.getInstance().realm(
+                keycloakProvider.getRealm()
+        ).users().search(userDTO.getUsername()).get(0).getId();
         try {
             userService.getUserById(id);
         } catch (Exception e){
