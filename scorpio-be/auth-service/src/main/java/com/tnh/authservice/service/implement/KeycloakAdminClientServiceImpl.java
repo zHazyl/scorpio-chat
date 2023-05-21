@@ -3,6 +3,7 @@ package com.tnh.authservice.service.implement;
 import com.tnh.authservice.config.KeycloakProvider;
 import com.tnh.authservice.dto.UserDTO;
 import com.tnh.authservice.service.KeycloakAdminClientService;
+import com.tnh.authservice.utils.exception.AlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -48,10 +49,11 @@ public class KeycloakAdminClientServiceImpl implements KeycloakAdminClientServic
 
         if (response.getStatus() == 201) {
             // if you want to save the user to your other database, do it here:
-            // I already have saved before
+            // I already have saved befor
+            return response;
         }
 
-        return response;
+        throw new AlreadyExistsException("User is exist");
 
     }
 
